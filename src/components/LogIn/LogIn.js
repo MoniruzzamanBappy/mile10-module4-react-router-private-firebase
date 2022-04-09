@@ -1,8 +1,21 @@
+import { getAuth } from 'firebase/auth';
 import React from 'react';
-import useFirebase from './../../hooks/useFirebase';
+import { useSignInWithGoogle } from 'react-firebase-hooks/auth';
+import app from '../../firebase.init';
+import { useLocation, useNavigate } from 'react-router-dom';
 
+const auth = getAuth(app);
 const LogIn = () => {
-    const  {signInWithGoogle} = useFirebase();
+  const [signInWithGoogle, user, loading, error] = useSignInWithGoogle(auth);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const from = location?.state?.from?.pathname || "/";
+  const handleGoogleSignIn = ()=>{
+    signInWithGoogle()
+    .then(()=>{
+      navigate(from, {replace: true})
+    })
+  }
     return (
         <div className="h-screen flex bg-gray-bg1">
       <div className="w-full max-w-md m-auto bg-white rounded-lg border border-primaryBorder shadow-default py-10 px-16">
@@ -42,7 +55,7 @@ const LogIn = () => {
             Log in with
           </h1>
         <div className="flex justify-center items-center mt-6">
-          <button onClick={signInWithGoogle} className="bg-green py-2 px-4 text-sm text-black rounded border border-green">
+          <button onClick={handleGoogleSignIn} className="bg-green py-2 px-4 text-sm text-black rounded border border-green">
             Google
           </button>
           <button className="bg-green py-2 px-4 ml-2 text-sm text-black rounded border border-green">

@@ -1,9 +1,13 @@
 import React from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { Link } from "react-router-dom";
-import useFirebase from "../../hooks/useFirebase";
+import { getAuth, signOut } from "firebase/auth";
+import app from "../../firebase.init";
+
+const auth = getAuth(app);
 
 const Header = () => {
-  const { user, handleSignOut } = useFirebase();
+  const [user] = useAuthState(auth);
   return (
     <>
       <div className="flex flex-wrap">
@@ -39,17 +43,17 @@ const Header = () => {
                       Sign Up
                     </Link>
                   </li>
-                  { user?.uid ?
+                  {user?.uid ? (
                     <p className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75">
                       {user?.displayName && user.displayName}
                     </p>
-                    :
+                  ) : (
                     <></>
-                  }
+                  )}
                   {user?.uid ? (
                     <li className="nav-item">
                       <Link
-                        onClick={handleSignOut}
+                        onClick={() => signOut(auth)}
                         className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
                         to="/home"
                       >
@@ -66,6 +70,14 @@ const Header = () => {
                       </Link>
                     </li>
                   )}
+                  <li className="nav-item">
+                    <Link
+                      className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
+                      to="/orders"
+                    >
+                      Orders
+                    </Link>
+                  </li>
                   <li className="nav-item">
                     <Link
                       className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
